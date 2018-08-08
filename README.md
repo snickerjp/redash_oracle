@@ -1,4 +1,4 @@
-# Redash in Oracle Instant Client
+# Redash Docker image in Oracle Instant Client
 
 
 ## build
