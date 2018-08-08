@@ -1,3 +1,5 @@
+# This is an example configuration for Docker Compose. Make sure to atleast update
+# the cookie secret & postgres database password.
 #
 # Some other recommendations:
 # 1. To persist Postgres data, assign it a volume host location.
@@ -5,7 +7,7 @@
 version: '2'
 services:
   server:
-    image: redash_server_oracle
+    image: redash/redash:latest
     command: server
     depends_on:
       - postgres
@@ -18,20 +20,10 @@ services:
       REDASH_REDIS_URL: "redis://redis:6379/0"
       REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
       REDASH_COOKIE_SECRET: veryverysecret
-      REDASH_MAIL_DEFAULT_SENDER: "monitor-info@example.com"
-      REDASH_MAIL_SERVER: "mail-server-host-name"
-      REDASH_MAIL_USERNAME: 'noreply@example.com'
-      REDASH_MAIL_PASSWORD: "P@ssWord"
-      REDASH_QUERY_RESULTS_CLEANUP_ENABLED: "true"
-      REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.python,redash.query_runner.treasuredata,redash.query_runner.athena,redash.query_runner.oracle"
-      REDASH_DATE_FORMAT: "YYYY/MM/DD"
-      #NLS_LANG: "Japanese_Japan.AL32UTF8"
-    links:
-      - postgres:postgres
-    volumes:
-    - .:/opt/my-redash
+      REDASH_WEB_WORKERS: 4
+    restart: always
   worker:
-    image: redash_worker_oracle
+    image: redash/redash:latest
     command: scheduler
     environment:
       PYTHONUNBUFFERED: 0
@@ -40,24 +32,15 @@ services:
       REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
       QUEUES: "queries,scheduled_queries,celery"
       WORKERS_COUNT: 2
-      REDASH_QUERY_RESULTS_CLEANUP_ENABLED: "true"
-      REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.python,redash.query_runner.treasuredata,redash.query_runner.athena,redash.query_runner.oracle"
-      REDASH_DATE_FORMAT: "YYYY/MM/DD"
-      REDASH_MAIL_DEFAULT_SENDER: "monitor-info@example.com"
-      REDASH_MAIL_SERVER: "mail-server-host-name"
-      REDASH_MAIL_USERNAME: 'noreply@example.com'
-      REDASH_MAIL_PASSWORD: "P@ssWord"
-      #NLS_LANG: "Japanese_Japan.AL32UTF8"
-    links:
-      - postgres:postgres
-    volumes:
-    - .:/opt/my-redash
+    restart: always
   redis:
-    image: redis:3-alpine
+    image: redis:3.0-alpine
+    restart: always
   postgres:
-    image: postgres:9-alpine
-    volumes:
-      - /opt/postgres-data:/var/lib/postgresql/data
+    image: postgres:9.5.6-alpine
+    # volumes:
+    #   - /opt/postgres-data:/var/lib/postgresql/data
+    restart: always
   nginx:
     image: redash/nginx:latest
     ports:
@@ -66,3 +49,4 @@ services:
       - server
     links:
       - server:redash
+    restart: always
