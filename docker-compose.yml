@@ -22,7 +22,7 @@ services:
       REDASH_COOKIE_SECRET: veryverysecret
       REDASH_WEB_WORKERS: 4
       REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.oracle"
-      REDASH_DATE_FORMAT: "YYYY/MM/DD"
+      #REDASH_DATE_FORMAT: "YYYY/MM/DD"
       #NLS_LANG: "Japanese_Japan.AL32UTF8"
     restart: always
   worker:
@@ -36,7 +36,7 @@ services:
       QUEUES: "queries,scheduled_queries,celery"
       WORKERS_COUNT: 2
       REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.oracle"
-      REDASH_DATE_FORMAT: "YYYY/MM/DD"
+      #REDASH_DATE_FORMAT: "YYYY/MM/DD"
       #NLS_LANG: "Japanese_Japan.AL32UTF8"
     restart: always
   redis:
