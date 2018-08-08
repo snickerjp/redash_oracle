@@ -24,7 +24,7 @@ docker-compose up -d
 
 ## enable "NLS_LANG"
 
-un-comment
+un-comment from `docker-compose.yml`
 ```
 #NLS_LANG: "Japanese_Japan.AL32UTF8"
 ^
