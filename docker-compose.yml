@@ -25,7 +25,7 @@ services:
       REDASH_QUERY_RESULTS_CLEANUP_ENABLED: "true"
       REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.python,redash.query_runner.treasuredata,redash.query_runner.athena,redash.query_runner.oracle"
       REDASH_DATE_FORMAT: "YYYY/MM/DD"
-      NLS_LANG: "Japanese_Japan.AL32UTF8"
+      #NLS_LANG: "Japanese_Japan.AL32UTF8"
     links:
       - postgres:postgres
     volumes:
@@ -47,7 +47,7 @@ services:
       REDASH_MAIL_SERVER: "mail-server-host-name"
       REDASH_MAIL_USERNAME: 'noreply@example.com'
       REDASH_MAIL_PASSWORD: "P@ssWord"
-      NLS_LANG: "Japanese_Japan.AL32UTF8"
+      #NLS_LANG: "Japanese_Japan.AL32UTF8"
     links:
       - postgres:postgres
     volumes:
