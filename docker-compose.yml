@@ -1,29 +1,68 @@
-redash:
-  image: redash_oracle 
-  ports:
-    - "5000:5000"
-  links:
-    - redis
-    - postgres
-  environment:
-    REDASH_STATIC_ASSETS_PATH: "../rd_ui/dist/"
-    REDASH_LOG_LEVEL: "INFO"
-    REDASH_REDIS_URL: "redis://redis:6379/0"
-    REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
-    REDASH_COOKIE_SECRET: veryverysecret
-    REDASH_MAIL_SERVER: "smtp01.b2wdigital.com" # default: localhost
-    REDASH_MAIL_DEFAULT_SENDER: "joao.leite@b2wdigital.com" # Email address to send from
-redis:
-  image: redis:2.8
-postgres:
-  image: postgres:9.3
-  ports:
-    - "5432:5432"
-  volumes:
-   - /opt/postgres-data:/var/lib/postgresql/data
-redash-nginx:
-  image: redash/nginx:latest
-  ports:
-    - "80:80"
-  links:
-    - redash
+#
+# Some other recommendations:
+# 1. To persist Postgres data, assign it a volume host location.
+# 2. Split the worker service to adhoc workers and scheduled queries workers.
+version: '2'
+services:
+  server:
+    image: redash_server_oracle
+    command: server
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "5000:5000"
+    environment:
+      PYTHONUNBUFFERED: 0
+      REDASH_LOG_LEVEL: "INFO"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+      REDASH_COOKIE_SECRET: veryverysecret
+      REDASH_MAIL_DEFAULT_SENDER: "monitor-info@example.com"
+      REDASH_MAIL_SERVER: "mail-server-host-name"
+      REDASH_MAIL_USERNAME: 'noreply@example.com'
+      REDASH_MAIL_PASSWORD: "P@ssWord"
+      REDASH_QUERY_RESULTS_CLEANUP_ENABLED: "true"
+      REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.python,redash.query_runner.treasuredata,redash.query_runner.athena,redash.query_runner.oracle"
+      REDASH_DATE_FORMAT: "YYYY/MM/DD"
+      NLS_LANG: "Japanese_Japan.AL32UTF8"
+    links:
+      - postgres:postgres
+    volumes:
+    - .:/opt/my-redash
+  worker:
+    image: redash_worker_oracle
+    command: scheduler
+    environment:
+      PYTHONUNBUFFERED: 0
+      REDASH_LOG_LEVEL: "INFO"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+      QUEUES: "queries,scheduled_queries,celery"
+      WORKERS_COUNT: 2
+      REDASH_QUERY_RESULTS_CLEANUP_ENABLED: "true"
+      REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.python,redash.query_runner.treasuredata,redash.query_runner.athena,redash.query_runner.oracle"
+      REDASH_DATE_FORMAT: "YYYY/MM/DD"
+      REDASH_MAIL_DEFAULT_SENDER: "monitor-info@example.com"
+      REDASH_MAIL_SERVER: "mail-server-host-name"
+      REDASH_MAIL_USERNAME: 'noreply@example.com'
+      REDASH_MAIL_PASSWORD: "P@ssWord"
+      NLS_LANG: "Japanese_Japan.AL32UTF8"
+    links:
+      - postgres:postgres
+    volumes:
+    - .:/opt/my-redash
+  redis:
+    image: redis:3-alpine
+  postgres:
+    image: postgres:9-alpine
+    volumes:
+      - /opt/postgres-data:/var/lib/postgresql/data
+  nginx:
+    image: redash/nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    links:
+      - server:redash
