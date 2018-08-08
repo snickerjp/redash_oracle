@@ -12,7 +12,7 @@ Read [oracle/DOWNLOAD.md](oracle/DOWNLOAD.md)
 ### 2nd
 
 ```
-docker build -t redash_worker_oracle .
+docker build -t redash_server_oracle .
 ```
 
 ## use
