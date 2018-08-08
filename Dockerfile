@@ -20,8 +20,8 @@ RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 RUN apt-get install libaio-dev -y
 RUN apt-get clean -y
 
-ENV ORACLE_HOME=/usr/local/instantclient
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient
+ENV ORACLE_HOME=/usr/local/instantclient \
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient
 
 RUN pip install cx_Oracle==5.2.1
 
