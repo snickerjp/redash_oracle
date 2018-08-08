@@ -9,7 +9,7 @@ RUN apt-get update  -y \
     && apt-get install -y unzip libaio-dev \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
-    && for i in /tmp/oracle/* ;do unzip $i -d /usr/local/ ;done \
+    && for i in /tmp/oracle/*.zip ;do unzip $i -d /usr/local/ ;done \
     && ln -sv /usr/local/instantclient* /usr/local/instantclient \
     && ln -sv /usr/local/instantclient/libclntsh.so.11.1 /usr/local/instantclient/libclntsh.so \
     && ln -sv /usr/local/instantclient/sqlplus /usr/bin/sqlplus
