@@ -5,18 +5,16 @@ USER root
 # Oracle instantclient
 COPY oracle /tmp/oracle
 
-RUN apt-get update  -y
-RUN apt-get install -y unzip
-
-RUN unzip /tmp/instantclient-basic-linux.x64-11.2.0.4.0.zip -d /usr/local/
-RUN unzip /tmp/instantclient-sdk-linux.x64-11.2.0.4.0.zip -d /usr/local/
-RUN unzip /tmp/instantclient-sqlplus-linux.x64-11.2.0.4.0.zip -d /usr/local/
-RUN ln -s /usr/local/instantclient_11_2 /usr/local/instantclient
-RUN ln -s /usr/local/instantclient/libclntsh.so.11.1 /usr/local/instantclient/libclntsh.so
-RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
-
-RUN apt-get install libaio-dev -y
-RUN apt-get clean -y
+RUN apt-get update  -y \
+    && apt-get install -y unzip libaio-dev \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /usr/local/instantclient
+    && for i in /tmp/oracle/* ;
+       do unzip $i -d -j /usr/local/instantclient ;
+       done
+    && ln -s /usr/local/instantclient/libclntsh.so.11.1 /usr/local/instantclient/libclntsh.so \
+    && ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 
 ENV ORACLE_HOME=/usr/local/instantclient \
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient
