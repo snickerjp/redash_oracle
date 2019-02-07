@@ -1,6 +1,6 @@
 # Download from
 
-  * [Oracle Instant Client \- Free tools and libraries for connecting to Oracle Database](http://www.oracle.com/technetwork/database/database-technologies/instant-client/overview/index.html)
+[Oracle Instant Client \- Free tools and libraries for connecting to Oracle Database](http://www.oracle.com/technetwork/database/database-technologies/instant-client/overview/index.html)
 
 example:
 
