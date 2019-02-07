@@ -14,6 +14,7 @@ RUN apt-get update  -y \
     && ln -sv /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so \
     && ln -sv /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 
+USER redash
 
 # Create Oracle redash
 FROM redash/redash:latest
