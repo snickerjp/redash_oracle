@@ -26,7 +26,7 @@ COPY --from=build /usr/bin/sqlplus /usr/bin/sqlplus
 ENV ORACLE_HOME=/usr/local/instantclient \
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/instantclient
 
-RUN pip install cx_Oracle==7.2.3
+RUN pip install cx_Oracle==7.3.0
 
 USER redash
 #Add REDASH ENV to add Oracle Query Runner
